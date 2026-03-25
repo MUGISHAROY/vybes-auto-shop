@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vybes Auto | The Digital Garage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --amazon-dark: #0f1111;
+            --accent-orange: #ff9900;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+        body { 
+            background: radial-gradient(circle at top right, #1a1c2c, #0f1111);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-orange);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        /* Hidden Admin Trigger Animation */
+        .secret-trigger:active { transform: scale(0.95); transition: 0.1s; }
+        
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #ff9900, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between bg-[#0f1111]/80 backdrop-blur-md border-b border-white/10">
+        <div class="cursor-pointer secret-trigger" ondblclick="location.href='admin.html'">
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic">
+                VYBES<span class="text-orange-500">AUTO</span>
+            </h1>
+        </div>
+
+        <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-400">
+            <a href="#" class="hover:text-orange-500 transition">ENGINES</a>
+            <a href="#" class="hover:text-orange-500 transition">SUSPENSION</a>
+            <a href="#" class="hover:text-orange-500 transition">BODY PARTS</a>
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <div class="relative group cursor-pointer">
+                <span class="text-xl">🛒</span>
+                <div id="cart-dot" class="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full hidden"></div>
+            </div>
+            <button class="bg-white text-black px-5 py-2 rounded-full text-xs font-bold hover:bg-orange-500 hover:text-white transition">SIGN IN</button>
+        </div>
+    </nav>
+
+    <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <img src="C:\Users\Guest1\Desktop\roy books\New folder\image.jpg" class="w-full h-full object-cover">
+        </div>
+        <div class="relative z-10 text-center px-4 animate__animated animate__fadeInUp">
+            <h2 class="text-5xl md:text-7xl font-black mb-4 gradient-text">PREMIUM AUTO SPARES</h2>
+            <p class="text-gray-400 max-w-xl mx-auto mb-8">Direct from the garage to your doorstep. Genuine parts for Toyota, Subaru, and Mercedes.</p>
+            
+            <div class="flex max-w-lg mx-auto bg-white/10 p-1 rounded-full border border-white/20 backdrop-blur-xl">
+                <input type="text" placeholder="Search by car model or part..." class="bg-transparent flex-1 px-6 outline-none text-sm">
+                <button class="bg-orange-500 text-black px-8 py-3 rounded-full font-bold text-sm">SEARCH</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 py-16">
+        <h3 class="text-xl font-bold mb-8 flex items-center gap-2">
+            <span class="w-8 h-1 bg-orange-500 rounded-full"></span>
+            NEW ARRIVALS IN KAMPALA
+        </h3>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div class="glass-card rounded-2xl p-4 flex flex-col group">
+                <div class="relative overflow-hidden rounded-xl mb-4">
+                    <img src="https://via.placeholder.com/300x300/111/fff?text=Shock+Absorbers" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
+                    <span class="absolute top-2 left-2 bg-orange-500 text-black text-[10px] font-black px-2 py-1 rounded">NEW</span>
+                </div>
+                <h4 class="text-sm font-bold text-gray-200 truncate">TOYOTA PREMIO SHOCKS</h4>
+                <p class="text-xs text-gray-500 mb-4">Suspension • Genuine</p>
+                <div class="mt-auto flex items-center justify-between">
+                    <span class="text-orange-500 font-black">UGX 240,000</span>
+                    <button onclick="addToCart()" class="bg-white/10 hover:bg-white hover:text-black p-2 rounded-lg transition">
+                        ➕
+                    </button>
+                </div>
+            </div>
+            </div>
+    </section>
+
+    <script>
+        function addToCart() {
+            document.getElementById('cart-dot').classList.remove('hidden');
+            // Add sound effect or haptic feedback here
+        }
+    </script>
+</body>
+</html>
