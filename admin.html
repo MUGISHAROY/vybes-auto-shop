@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control | Vybes Auto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        body { background: #050505; color: white; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        input, select, textarea { background: #111 !important; border: 1px solid #333 !important; color: white !important; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-black flex items-center justify-center p-6">
+        <div class="glass-panel p-8 rounded-3xl w-full max-w-md text-center">
+            <h2 class="text-2xl font-black mb-6 italic">VYBES<span class="text-orange-500">ADMIN</span></h2>
+            <input type="password" id="admin-pass" placeholder="Enter Access Key" class="w-full p-4 rounded-xl mb-4 text-center">
+            <button onclick="checkAuth()" class="w-full bg-orange-500 text-black font-bold py-4 rounded-xl">ACCESS SYSTEM</button>
+        </div>
+    </div>
+
+    <div id="admin-content" class="max-w-4xl mx-auto hidden">
+        <h1 class="text-3xl font-black mb-10 text-orange-500 uppercase">Publish Inventory</h1>
+        
+        <form id="publish-form" class="glass-panel p-8 rounded-3xl space-y-4">
+            <input type="text" id="p-name" placeholder="Part Name (e.g., Toyota Shock Absorber)" class="p-4 rounded-xl w-full" required>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <input type="number" id="p-price" placeholder="Price (Numbers only: 250000)" class="p-4 rounded-xl w-full" required>
+                <select id="p-category" class="p-4 rounded-xl w-full">
+                    <option>Engine Parts</option>
+                    <option>Suspension</option>
+                    <option>Body & Trim</option>
+                    <option>Electronics</option>
+                </select>
+            </div>
+
+            <input type="url" id="p-image-link" placeholder="Paste Image URL here (from Pinterest, Google, etc.)" class="p-4 rounded-xl w-full" required>
+            
+            <textarea id="p-desc" placeholder="Brief Description..." class="p-4 rounded-xl w-full h-32"></textarea>
+            
+            <button type="submit" id="submit-btn" class="w-full bg-white text-black font-bold py-4 rounded-xl uppercase hover:bg-orange-500 transition">
+                Publish to Store
+            </button>
+        </form>
+
+        <div id="admin-inventory-list" class="mt-12 space-y-4">
+            </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyArP7pHkrQOKJtUWFnuhv74ZMQUcUrmzVA",
+            authDomain: "vybesautoshaop.firebaseapp.com",
+            projectId: "vybesautoshaop",
+            storageBucket: "vybesautoshaop.firebasestorage.app",
+            messagingSenderId: "176055320817",
+            appId: "1:176055320817:web:0fe9315a7ed339aba9a950"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function checkAuth() {
+            if(document.getElementById('admin-pass').value === "Vybes2026") {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                loadManager();
+            }
+        }
+
+        document.getElementById('publish-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "PUBLISHING...";
+
+            try {
+                await db.collection('parts').add({
+                    name: document.getElementById('p-name').value,
+                    price: parseInt(document.getElementById('p-price').value).toLocaleString(),
+                    category: document.getElementById('p-category').value,
+                    description: document.getElementById('p-desc').value,
+                    image_url: document.getElementById('p-image-link').value, // Use the link directly
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("Item Published!");
+                location.reload();
+            } catch (err) {
+                alert("Error: " + err.message);
+                btn.innerText = "Publish to Store";
+            }
+        };
+
+        function loadManager() {
+            db.collection('parts').orderBy('timestamp', 'desc').onSnapshot(snap => {
+                const container = document.getElementById('admin-inventory-list');
+                container.innerHTML = '<h3 class="font-bold text-gray-500 mb-4">LIVE ITEMS</h3>';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center glass-panel p-4 rounded-xl">
+                            <span class="text-sm font-bold">${p.name}</span>
+                            <button onclick="db.collection('parts').doc('${doc.id}').delete()" class="text-red-500 text-xs font-bold">REMOVE</button>
+                        </div>`;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
