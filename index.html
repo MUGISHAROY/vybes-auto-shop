@@ -157,15 +157,15 @@
             }, 1000);
         }
 
-        // REDIRECT TO PRODUCT PAGE
+     // REDIRECT TO PRODUCT PAGE
         function viewProduct(name, price, imgUrl) {
-    const params = new URLSearchParams({
-        name: name,
-        price: price,
-        img: imgUrl // Added this line
-    });
-    window.location.href = `product.html?${params.toString()}`;
-}
+             const params = new URLSearchParams({
+             name: name,
+            price: price,
+            img: imgUrl // Added this line
+         });
+           window.location.href = `product.html?${params.toString()}`;
+          }
 
         function toggleCart() {
             alert("Cart feature: " + cartItems + " items ready for checkout!");
