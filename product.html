@@ -62,14 +62,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         const productName = urlParams.get('name');
         const productPrice = urlParams.get('price');
+        const productImage = urlParams.get('img'); // Added to fetch the image URL
 
         // 2. Update the page content if the data exists
         if (productName && productPrice) {
             document.getElementById('display-name').innerText = productName;
             document.getElementById('display-price').innerText = Number(productPrice).toLocaleString();
             
+            // If an image link was sent, display it; otherwise, use the placeholder
+            if (productImage) {
+                document.getElementById('display-image').src = decodeURIComponent(productImage);
+            }
+            
             // 3. Set up the WhatsApp order link
-            const whatsappNumber = "256789909802"; // REPLACE WITH YOUR ACTUAL NUMBER
+            const whatsappNumber = "256789909802"; 
             const message = encodeURIComponent(`Hello Vybes Auto, I want to order: ${productName} (UGX ${productPrice})`);
             
             document.getElementById('whatsapp-order').onclick = function() {
