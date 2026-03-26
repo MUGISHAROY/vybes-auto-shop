@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | VYBZ Auto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { background: #0f1111; color: white; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <nav class="max-w-6xl mx-auto mb-8 flex justify-between items-center">
+        <button onclick="history.back()" class="text-xs bg-white/10 px-4 py-2 rounded-full hover:bg-white/20 transition">← BACK TO STORE</button>
+        <h1 class="text-xl font-black italic tracking-tighter">VYBZ<span class="text-orange-500">AUTO</span></h1>
+    </nav>
+
+    <main class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+        <div class="glass-panel p-4 rounded-3xl h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
+            <img id="product-image" src="https://via.placeholder.com/500?text=Loading+Image..." class="w-full h-full object-cover rounded-2xl">
+        </div>
+
+        <div class="space-y-6">
+            <div class="glass-panel p-8 rounded-3xl">
+                <h2 id="product-name" class="text-3xl font-black mb-2 uppercase italic tracking-tighter">Loading Product...</h2>
+                <p id="product-category" class="text-gray-500 text-sm uppercase mb-4 tracking-widest">Category</p>
+                <div class="text-4xl font-black text-orange-500 mb-6">UGX <span id="product-price">0</span></div>
+                
+                <p id="product-desc" class="text-gray-400 leading-relaxed mb-8">
+                    Fetching the best deals for you. Please wait a moment...
+                </p>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="whatsapp-btn" class="bg-[#25D366] text-black font-black py-4 rounded-xl hover:opacity-90 transition uppercase text-xs">Order via WhatsApp</button>
+                    <button class="bg-white text-black font-black py-4 rounded-xl hover:bg-orange-500 hover:text-white transition uppercase text-xs">Add to Cart</button>
+                </div>
+            </div>
+
+            <div class="glass-panel p-4 rounded-2xl flex items-center gap-4 border-l-4 border-orange-500">
+                <span class="text-2xl">🚚</span>
+                <div>
+                    <h4 class="text-xs font-bold">FAST DELIVERY</h4>
+                    <p class="text-[10px] text-gray-500">Available across Kampala and Entebbe within 24 hours.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 1. Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyArP7pHkrQOKJtUWFnuhv74ZMQUcUrmzVA",
+            authDomain: "vybesautoshaop.firebaseapp.com",
+            projectId: "vybesautoshaop",
+            storageBucket: "vybesautoshaop.firebasestorage.app",
+            messagingSenderId: "176055320817",
+            appId: "1:176055320817:web:0fe9315a7ed339aba9a950"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 2. Get Product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (productId) {
+            db.collection('parts').doc(productId).get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    // Update Page Content
+                    document.getElementById('product-image').src = data.image_url;
+                    document.getElementById('product-name').innerText = data.name;
+                    document.getElementById('product-price').innerText = data.price;
+                    document.getElementById('product-desc').innerText = data.description || "No description provided for this premium part.";
+                    document.getElementById('product-category').innerText = data.category || "General Part";
+                    
+                    // Update WhatsApp Link
+                    const message = encodeURIComponent(`Hello Vybes Auto, I am interested in the ${data.name} (UGX ${data.price}). Is it still available?`);
+                    document.getElementById('whatsapp-btn').onclick = () => {
+                        window.open(`https://wa.me/256700000000?text=${message}`, '_blank'); // Replace with your actual number
+                    };
+
+                } else {
+                    document.getElementById('product-name').innerText = "Product Not Found";
+                }
+            }).catch((error) => {
+                console.error("Error fetching product:", error);
+            });
+        }
+    </script>
+</body>
+</html>
